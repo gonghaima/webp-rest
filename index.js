@@ -33,13 +33,12 @@ app.get('/', (req, res) => {
             "https://images.unsplash.com/photo-1574880790898-29d299ff284b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600",
         responseType: "stream"
     }).then(response => {
-        // console.log(`response is ${Object.keys(response.data)}`);
-        // response.data.pipe(res);
-        response.data.pipe(transformer).pipe(res);
-        // response.data.pipe({
-        //     on: () => { }, once: () => { }, emit: () => { }, pipe: () => "hass",
-        //     write: () => "whttass"
-        // }).pipe(res);
+        response.data.pipe(sharp().resize({
+            width: 200,
+            height: 200,
+            fit: sharp.fit.cover,
+            position: sharp.strategy.entropy
+        })).pipe(res);
     }).catch(err => res.send(`err: ${err}`))
 })
 
