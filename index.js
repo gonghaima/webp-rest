@@ -26,20 +26,36 @@ const transformer = sharp().resize({
     position: sharp.strategy.entropy
 });
 
-app.get('/', (req, res) => {
-    axios({
-        method: "get",
-        url:
-            "https://images.unsplash.com/photo-1574880790898-29d299ff284b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600",
-        responseType: "stream"
-    }).then(response => {
-        response.data.pipe(sharp().resize({
-            width: 200,
-            height: 200,
-            fit: sharp.fit.cover,
-            position: sharp.strategy.entropy
-        })).pipe(res);
-    }).catch(err => res.send(`err: ${err}`))
+// app.get('/', (req, res) => {
+//     axios({
+//         method: "get",
+//         url:
+//             "https://images.unsplash.com/photo-1574880790898-29d299ff284b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600",
+//         responseType: "stream"
+//     }).then(response => {
+//         response.data.pipe(sharp().resize({
+//             width: 200,
+//             height: 200,
+//             fit: sharp.fit.cover,
+//             position: sharp.strategy.entropy
+//         })).pipe(res);
+//     }).catch(err => res.send(`err: ${err}`))
+// })
+
+app.get('/', async (req, res) => {
+    const inputReadableStream = await
+        axios({
+            method: "get",
+            url:
+                "https://images.unsplash.com/photo-1574880790898-29d299ff284b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600",
+            responseType: "stream"
+        });
+    inputReadableStream.data.pipe(sharp().resize({
+        width: 200,
+        height: 200,
+        fit: sharp.fit.cover,
+        position: sharp.strategy.entropy
+    })).pipe(res);
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
